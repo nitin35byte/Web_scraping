@@ -1,0 +1,74 @@
+from bs4 import BeautifulSoup
+import requests
+import pandas as pd
+
+url = "https://www.flipkart.com/search?q=imphone&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+Product_Name = [product.text for product in soup.find_all('div', class_="_4rR01T")]
+ROM = [item.text for item in soup.find_all('li', class_="rgWa7D") if 'GB' in item.text]
+Display = [item.text for item in soup.find_all('li', class_="rgWa7D") if 'inch' in item.text]
+Camera = [item.text for item in soup.find_all('li', class_="rgWa7D") if 'MP' in item.text]
+Processor = [item.text for item in soup.find_all('li', class_="rgWa7D") if 'Processor' in item.text]
+Warranty = [item.text for item in soup.find_all('li', class_="rgWa7D") if 'Warranty' in item.text]
+Rating = [rating.text for rating in soup.find_all('div', class_="_3LWZlK")]
+Actual_price = [price.text for price in soup.find_all("div", class_="_3I9_wc _27UcVY")]
+Selling_price=[price.text for price in soup.find_all('div' ,class_='_30jeq3 _1_WHN1')]
+
+# Ensure all lists have the same length
+# ...
+
+# Ensure all lists have the same length
+common_length = min(
+    len(Product_Name),
+    len(ROM),
+    len(Display),
+    len(Camera),
+    len(Processor),
+    len(Warranty),
+    len(Rating),
+    len(Actual_price),
+    len(Selling_price)
+)
+
+# Print the lengths of each list
+print("Length of Product_Name:", len(Product_Name))
+print("Length of ROM:", len(ROM))
+print("Length of Display:", len(Display))
+print("Length of Camera:", len(Camera))
+print("Length of Processor:", len(Processor))
+print("Length of Warranty:", len(Warranty))
+print("Length of Rating:", len(Rating))
+print("Length of Actual_price:", len(Actual_price))
+print("Length of Selling_price:", len(Selling_price))
+
+# Slice all lists to the common length
+Product_Name = Product_Name[:common_length]
+ROM = ROM[:common_length]
+Display = Display[:common_length]
+Camera = Camera[:common_length]
+Processor = Processor[:common_length]
+Warranty = Warranty[:common_length]
+Rating = Rating[:common_length]
+Actual_price = Actual_price[:common_length]
+Selling_price = Selling_price[:common_length]
+
+# Print the common length
+print("Common Length:", common_length)
+
+# Create DataFrame with the sliced lists
+Mobile_Data = pd.DataFrame({
+    'Product Name': Product_Name,
+    'ROM': ROM,
+    'Display': Display,
+    'Camera': Camera,
+    'Processor': Processor,
+    'Warranty': Warranty,
+    'Rating': Rating,
+    'Actual Price': Actual_price,
+    'Selling_price': Selling_price
+})
+
+# Display the DataFrame
+print(Mobile_Data)
